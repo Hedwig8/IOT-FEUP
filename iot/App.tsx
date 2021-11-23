@@ -1,40 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
-import Geolocation from 'react-native-geolocation-service';
-import { PermissionsAndroid } from 'react-native';
-import { StyleSheet, Text, View } from 'react-native';
-
-
+import React, { useState, useEffect } from 'react';
+import { Platform, Text, View, StyleSheet } from 'react-native';
+import * as Location from 'expo-location';
 
 export default function App() {
+  const [location, setLocation] = useState({});
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const [gps, setGps] = useState({});
-  const [permissions, setPermissions] = useState(false);
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
 
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
 
-
-
-  useEffect(async () => {
-    try {
-      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
-      console.log(granted);
-    } finally {
-      
-    }
-    Geolocation.getCurrentPosition((position) => {
-      console.log(position);
-    },
-    (error) => {
-      console.log(error)
-    }
-
-    );
-  });
-
+  let text = 'Waiting..';
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+    console.log(text)
+  }
   return (
     <View style={styles.container}>
       <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Text>{text}</Text>
+
     </View>
   );
 }
