@@ -1,35 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Platform, Text, View, StyleSheet } from 'react-native';
+import { Platform, Text, View, StyleSheet, Button } from 'react-native';
 import * as Location from 'expo-location';
+import { initClient } from './broker/mqtt';
 
 export default function App() {
-  const [location, setLocation] = useState({});
+  const [location, setLocation] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
+  async function updateLocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setErrorMsg('Permission to access location was denied');
+      return;
+    }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
+    //let location = await Location.getLastKnownPositionAsync({ maxAge: 20 });
+    //setLocation(location === null ? {} : location);
+    Location.watchPositionAsync({ accuracy: Location.Accuracy.Low, timeInterval: 500, distanceInterval: 0}, (locationUpdate) => {
+      
+      let text = 'Waiting..';
+      if (errorMsg) {
+        text = errorMsg;
+      } else if (locationUpdate) {
+        text = JSON.stringify(locationUpdate);
+        //console.log(text)
+      }
+      setLocation(text);
+    });
+  }
+
+  useEffect(() => {
+    updateLocation();
   }, []);
 
-  let text = 'Waiting..';
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-    console.log(text)
-  }
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <Text>{text}</Text>
+      <Button title="locartion" onPress={updateLocation}></Button>
+      <Text>{location}</Text>
 
     </View>
   );
