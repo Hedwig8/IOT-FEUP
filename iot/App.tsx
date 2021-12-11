@@ -36,6 +36,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Button title="locartion" onPress={updateLocation}></Button>
+      <Button title="mqtt" onPress={initClient}></Button>
       <Text>{location}</Text>
 
     </View>
