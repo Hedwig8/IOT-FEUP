@@ -1,1 +1,3 @@
 iot/node_modules/*
+iot/android/local.properties
+iot/ios
