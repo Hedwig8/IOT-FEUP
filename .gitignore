@@ -4,3 +4,6 @@ app/android/local.properties
 iot/android/local.properties
 iot/ios
 app/ios
+dataApp/frontend/node_modules/*
+
+dataApp/backend/__pycache__
