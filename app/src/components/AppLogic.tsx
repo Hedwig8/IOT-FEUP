@@ -21,7 +21,9 @@ export const AppLogic = () => {
     } 
 
     useEffect(() => {
-
+        if(location != undefined && publish != undefined){
+            publish(location?.streetID.toString(), JSON.stringify(location));
+        }
     }, [location]);
 
     return (

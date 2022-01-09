@@ -1,4 +1,5 @@
-from flask import Flask
+from types import MethodType
+from flask import Flask, request
 from flask_cors import CORS
 from mqtt import run
 import threading
@@ -16,7 +17,11 @@ def test():
 
 
 
-
+@app.route("/insert", methods=['POST'])
+def insert():
+    data = request.get_json()
+    db.insert(data)
+    return "success"
 
 
 
