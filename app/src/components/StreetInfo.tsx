@@ -12,8 +12,9 @@ export const StreetInfo = ({location, setLocation} : StreetInfoProps) => {
 
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
-    const [id, setId] = useState(0);
-
+    const [speed, setSpeed] = useState(0);
+    const [heading, setHeading] = useState(0);
+    
     useEffect(() => {
         try {
             if (latitude === '' || longitude === '') return;
@@ -21,13 +22,13 @@ export const StreetInfo = ({location, setLocation} : StreetInfoProps) => {
             .then((response) => response.json())
             .then((json) => {
                 try {
-                    console.log(json);
                     setLocation({
                         streetID: json.osm_id,
-                        latitude: latitude,
-                        longitude: longitude
+                        latitude: json.lat,
+                        longitude: json.lon,
+                        speed: speed,
+                        heading: heading
                     });
-                    setId(json.osm_id);
                 } catch(error) {
                     console.log('Error: ', error);
                 }
@@ -39,10 +40,9 @@ export const StreetInfo = ({location, setLocation} : StreetInfoProps) => {
 
     return (
         <View>
-            <Location latitude={latitude} longitude={longitude} setLatitude={setLatitude} setLongitude={setLongitude} />
+            <Location latitude={latitude} longitude={longitude} setLatitude={setLatitude} setLongitude={setLongitude} setHeading={setHeading} setSpeed={setSpeed}/>
             <Text></Text>
             <Text>  STREET: {location.streetID}</Text>
-            <Text>  ID: {id}</Text>
             <Text></Text>
         </View>
     );

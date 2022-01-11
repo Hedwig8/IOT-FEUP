@@ -3,21 +3,18 @@ import * as MQTT from '@taoqf/react-native-mqtt';
 import { Section, styles } from './Section';
 import { Button, Text, TextInput, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { MqttClient } from '@taoqf/react-native-mqtt';
 
 export type CommunicationProps = {
     clientID: string;
-    setSubscribe: Dispatch<(topic:string) => void>;
-    setPublish: Dispatch<(topic:string, message: string) => void>;
-    messageHandler: ({id, text} : {id:string, text:string}) => void;
+    client: MqttClient | undefined;
+    setClient: Dispatch<MqttClient>;
 }
 
-export const Communication = ({clientID, setSubscribe, setPublish, messageHandler} : CommunicationProps) => {
-    const [client, setClient] = useState<MQTT.MqttClient | undefined>(undefined);
+export const Communication = ({clientID, client, setClient} : CommunicationProps) => {
     const [connected, setConnected] = useState(false);
     const [host, setHost] = useState("");
     const [port, setPort] = useState("");
-    const [receivedTopic, setReceivedTopic] = useState("");
-    const [receivedMessage, setReceivedMessage] = useState("");
 
     const connectDisconnect = () => {
         connected ? disconnect() : connect();
@@ -36,25 +33,7 @@ export const Communication = ({clientID, setSubscribe, setPublish, messageHandle
         client.on('connect', function () {
             setConnected(client.connected);
         });
-
-        client.on('message', function (topic, message, packet) {
-            // message is Buffer
-            console.log(topic, ': ', message.toString());
-            setReceivedTopic(topic);
-            setReceivedMessage(message.toString());
-            messageHandler(packet);
-        });
     }
-
-    useEffect(() => {
-        setSubscribe((topic) => {
-            connected ? client?.subscribe(topic) : false;
-        });
-
-        setPublish((topic, message) => {
-            connected ? client?.publish(topic, message) : false;
-        });
-    }, []);
 
     return (
         <View>
@@ -74,9 +53,6 @@ export const Communication = ({clientID, setSubscribe, setPublish, messageHandle
                     <Button title={connected ? 'Disconnect from broker' : 'Connect to broker'} 
                             onPress={connectDisconnect} color={Colors.darker} />
                 </View>
-            </Section>
-            <Section title='Messages'>
-                <Text style={styles.highlight} >{receivedTopic}: </Text> {receivedMessage}
             </Section>
             <Text></Text>
         </View>
