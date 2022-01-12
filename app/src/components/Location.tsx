@@ -16,6 +16,7 @@ export type LocationProps = {
 export const Location = ({latitude, setLatitude, longitude, setLongitude, setSpeed, setHeading}:LocationProps) => {
     const [lat, setLat] = useState("0");
     const [long, setLong] = useState("0");
+    const [head, setHead] = useState('0');
 
     const hasLocationPermissions = async () => {
         if (Platform.OS === 'android' && Platform.Version < 23) {
@@ -79,6 +80,7 @@ export const Location = ({latitude, setLatitude, longitude, setLongitude, setSpe
                 setLongitude(locationUpdate.coords.longitude.toString());
                 setSpeed(locationUpdate.coords.speed || 0);
                 setHeading(locationUpdate.coords.heading || 0);
+                setHead(locationUpdate.coords.heading?.toString() ?? '0');
             }, (error) => {
                 console.log("Error code ", error.code, ': ', error.message);
             }, { distanceFilter: 0, interval: 500, showLocationDialog: true, forceLocationManager: true, });
@@ -94,8 +96,7 @@ export const Location = ({latitude, setLatitude, longitude, setLongitude, setSpe
     return (
         <Section title="Location" >
             <Text style={styles.highlight}>Latitude: </Text>{lat}
-            {"\n"}
-            <Text style={styles.highlight}>Longitude: </Text>{long}
+            <Text style={styles.highlight}>   Longitude: </Text>{long}
             {"\n"}
             <Button title="Update Location" onPress={updateLocation} color={Colors.darker}></Button>
             {"\n\n"}
@@ -103,6 +104,8 @@ export const Location = ({latitude, setLatitude, longitude, setLongitude, setSpe
             {"\n"}
             <Text style={styles.highlight}>Automatic Longitude: </Text>{longitude}
             {"\n"}
+            <Text style={styles.highlight}>Heading: </Text>{head}
+            {'\n'}
         </Section>
     );
 }
