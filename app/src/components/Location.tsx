@@ -1,6 +1,6 @@
 import React, { Dispatch, useEffect, useState } from "react";
 import { Button, PermissionsAndroid, Platform, Text, ToastAndroid } from "react-native";
-import Geolocation from 'react-native-geolocation-service';
+import Geolocation from '@react-native-community/geolocation';
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Section, styles } from "./Section";
 
@@ -64,7 +64,7 @@ export const Location = ({latitude, setLatitude, longitude, setLongitude, setSpe
                 setLong(locationUpdate.coords.longitude.toString());
             }, (error) => {
                 console.log("Error code ", error.code, ': ', error.message);
-            }, { distanceFilter: 0, showLocationDialog: true, forceLocationManager: true, });
+            }, { distanceFilter: 0, enableHighAccuracy: true});
         } catch (error) {
             console.log('Error: ' + error);
         }
@@ -83,7 +83,7 @@ export const Location = ({latitude, setLatitude, longitude, setLongitude, setSpe
                 setHead(locationUpdate.coords.heading?.toString() ?? '0');
             }, (error) => {
                 console.log("Error code ", error.code, ': ', error.message);
-            }, { distanceFilter: 0, interval: 500, showLocationDialog: true, forceLocationManager: true, });
+            }, { distanceFilter: 0, enableHighAccuracy: true});
         } catch (error) {
             console.log('Error: ' + error);
         }
