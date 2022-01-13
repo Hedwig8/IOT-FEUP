@@ -1,13 +1,11 @@
-import { Rectangle } from "react-leaflet";
+import { Circle } from "react-leaflet";
 
 
 
-export const Street= (boundingbox, color) =>{
-
-
-
+export const Street= ({position}) =>{
+    const pathoptions = {fillColor: "red", fillOpacity: 1, stroke: false}
     return(
-        <Rectangle bounds={boundingbox} pathOptions={color}></Rectangle>
+       <Circle center={position} radius={200} pathOptions={pathoptions} ></Circle>
     );
 
 };

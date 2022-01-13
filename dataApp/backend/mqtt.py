@@ -1,11 +1,12 @@
 from paho.mqtt import client as mqtt_client
 from tinydb import TinyDB, Query
+import json
 
-broker = '192.168.1.66'
-port = 8800
+broker = 'test.mosquitto.org'
+port = 1883
 
 client_id = 'data_collector'
-
+Tinydb = None
 
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
@@ -22,13 +23,16 @@ def connect_mqtt():
 
 def subscribeToAll(client: mqtt_client):
     def on_message(client, userdata, msg):
+        Tinydb.insert(json.loads(msg.payload.decode()))
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
 
     client.subscribe("#")
     client.on_message = on_message
 
 
-def run():
+def run(db):
+    global Tinydb
+    Tinydb = db
     client = connect_mqtt()
     subscribeToAll(client)
     client.loop_forever()
