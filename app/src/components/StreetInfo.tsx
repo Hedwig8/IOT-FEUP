@@ -6,9 +6,10 @@ import { Location } from "./Location";
 export type StreetInfoProps = {
     location: LocationType;
     setLocation: Dispatch<LocationType>;
+    clientID: string;
 }
 
-export const StreetInfo = ({location, setLocation} : StreetInfoProps) => {
+export const StreetInfo = ({location, setLocation, clientID} : StreetInfoProps) => {
 
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
@@ -27,7 +28,8 @@ export const StreetInfo = ({location, setLocation} : StreetInfoProps) => {
                         latitude: json.lat,
                         longitude: json.lon,
                         speed: speed,
-                        heading: heading
+                        heading: heading,
+                        clientID: clientID
                     });
                 } catch(error) {
                     console.log('Error: ', error);

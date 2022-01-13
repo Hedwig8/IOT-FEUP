@@ -13,6 +13,7 @@ export type LocationType = {
     longitude: string;
     speed: number;
     heading: number;
+    clientID: string;
 }
 
 const prefix = 'iot/app/info/david/henrique/miguel/';
@@ -20,7 +21,7 @@ const prefix = 'iot/app/info/david/henrique/miguel/';
 export const AppLogic = () => {
     const [clientID] = useState(uuid.v4().toString());
     const [client, setClient] = useState<MqttClient>();
-    const [location, setLocation] = useState<LocationType>({ streetID: 0, latitude: '', longitude: '', speed: 0, heading: 0 });
+    const [location, setLocation] = useState<LocationType>({ streetID: 0, latitude: '', longitude: '', speed: 0, heading: 0, clientID: clientID });
     const [danger, setDanger] = useState(false);
 
     const okMsg = 'You are OK';
@@ -31,7 +32,10 @@ export const AppLogic = () => {
         const objMessage = JSON.parse(message);
 
         // same client
-        if (objMessage.clientID === clientID) return;
+        if (objMessage.clientID === clientID) {
+            console.log('same client');
+            return;
+        } 
 
         // compute imaginary point in a given direction (heading) a given distance (distance variable)
         const distance = 15; // m
@@ -90,7 +94,7 @@ export const AppLogic = () => {
             <View style={{display: danger ? 'flex' : 'none', backgroundColor: 'red'}}>
                 <Section title={'>' + ' ' + dangerMsg} ></Section>
             </View>
-            <StreetInfo location={location} setLocation={setLocation} />
+            <StreetInfo location={location} setLocation={setLocation} clientID={clientID} />
             <Communication clientID={clientID} client={client} setClient={setClient} />
 
         </View>
