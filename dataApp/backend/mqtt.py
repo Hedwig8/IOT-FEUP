@@ -5,6 +5,8 @@ import json
 broker = 'test.mosquitto.org'
 port = 1883
 
+prefix = 'iot/app/info/david/henrique/miguel/'
+
 client_id = 'data_collector'
 Tinydb = None
 
@@ -26,7 +28,7 @@ def subscribeToAll(client: mqtt_client):
         Tinydb.insert(json.loads(msg.payload.decode()))
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
 
-    client.subscribe("#")
+    client.subscribe(prefix + "#")
     client.on_message = on_message
 
 
