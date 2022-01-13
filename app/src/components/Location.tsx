@@ -9,11 +9,14 @@ export type LocationProps = {
     setLatitude: Dispatch<string>;
     longitude: string;
     setLongitude: Dispatch<string>;
+    setSpeed: Dispatch<number>;
+    setHeading: Dispatch<number>;
 }
 
-export const Location = ({latitude, setLatitude, longitude, setLongitude}:LocationProps) => {
+export const Location = ({latitude, setLatitude, longitude, setLongitude, setSpeed, setHeading}:LocationProps) => {
     const [lat, setLat] = useState("0");
     const [long, setLong] = useState("0");
+    const [head, setHead] = useState('0');
 
     const hasLocationPermissions = async () => {
         if (Platform.OS === 'android' && Platform.Version < 23) {
@@ -57,7 +60,6 @@ export const Location = ({latitude, setLatitude, longitude, setLongitude}:Locati
             if (!hasPermissions) return;
 
             Geolocation.getCurrentPosition((locationUpdate) => {
-                console.log(locationUpdate);
                 setLat(locationUpdate.coords.latitude.toString());
                 setLong(locationUpdate.coords.longitude.toString());
             }, (error) => {
@@ -76,6 +78,9 @@ export const Location = ({latitude, setLatitude, longitude, setLongitude}:Locati
             Geolocation.watchPosition((locationUpdate) => {
                 setLatitude(locationUpdate.coords.latitude.toString());
                 setLongitude(locationUpdate.coords.longitude.toString());
+                setSpeed(locationUpdate.coords.speed || 0);
+                setHeading(locationUpdate.coords.heading || 0);
+                setHead(locationUpdate.coords.heading?.toString() ?? '0');
             }, (error) => {
                 console.log("Error code ", error.code, ': ', error.message);
             }, { distanceFilter: 0, interval: 500, showLocationDialog: true, forceLocationManager: true, });
@@ -91,15 +96,16 @@ export const Location = ({latitude, setLatitude, longitude, setLongitude}:Locati
     return (
         <Section title="Location" >
             <Text style={styles.highlight}>Latitude: </Text>{lat}
+            <Text style={styles.highlight}>   Longitude: </Text>{long}
             {"\n"}
-            <Text style={styles.highlight}>Longitude: </Text>{long}
-            {"\n\n"}
             <Button title="Update Location" onPress={updateLocation} color={Colors.darker}></Button>
-            {"\n"}
+            {"\n\n"}
             <Text style={styles.highlight}>Automatic Latitude: </Text>{latitude}
             {"\n"}
             <Text style={styles.highlight}>Automatic Longitude: </Text>{longitude}
             {"\n"}
+            <Text style={styles.highlight}>Heading: </Text>{head}
+            {'\n'}
         </Section>
     );
 }
