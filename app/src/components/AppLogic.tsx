@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StreetInfo } from './StreetInfo';
 import { Communication } from './MQTT';
 import uuid from 'react-native-uuid';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { MqttClient } from '@taoqf/react-native-mqtt';
 import * as geolib from 'geolib';
 import { Section } from './Section';
@@ -24,18 +24,21 @@ export const AppLogic = () => {
     const [location, setLocation] = useState<LocationType>({ streetID: 0, latitude: '', longitude: '', speed: 0, heading: 0, clientID: clientID });
     const [danger, setDanger] = useState(false);
 
+    const [message, setMessage] = useState('');
+
     const okMsg = 'You are OK';
     const warningMsg = 'Warning: ';
     const dangerMsg = 'Danger: you are heading straight into someone!';
 
-    const messageHandler = (message: string) => {
-        const objMessage = JSON.parse(message);
-
+    const messageHandler = (msg: string) => {
+        const objMessage = JSON.parse(msg);
+        
         // same client
         if (objMessage.clientID === clientID) {
             console.log('same client');
             return;
         } 
+        setMessage(msg);
 
         // compute imaginary point in a given direction (heading) a given distance (distance variable)
         const distance = 15; // m
@@ -73,7 +76,6 @@ export const AppLogic = () => {
     }
 
     const publish = (topic: string, message: string) => {
-        console.log(topic, ': ', message);
         client?.publish(prefix + topic, message);
     }
 
@@ -96,7 +98,10 @@ export const AppLogic = () => {
             </View>
             <StreetInfo location={location} setLocation={setLocation} clientID={clientID} />
             <Communication clientID={clientID} client={client} setClient={setClient} />
-
+            <Section title='Messages' >
+                <Text> &gt; {message}</Text>
+            </Section>
+            <Text>{clientID}</Text>
         </View>
     );
 }

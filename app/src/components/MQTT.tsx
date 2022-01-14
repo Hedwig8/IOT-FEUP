@@ -1,4 +1,4 @@
-import React, { Dispatch, useEffect, useState } from 'react';
+import React, { Dispatch, useState } from 'react';
 import * as MQTT from '@taoqf/react-native-mqtt';
 import { Section, styles } from './Section';
 import { Button, Text, TextInput, View } from 'react-native';
@@ -13,8 +13,8 @@ export type CommunicationProps = {
 
 export const Communication = ({clientID, client, setClient} : CommunicationProps) => {
     const [connected, setConnected] = useState(false);
-    const [host, setHost] = useState("");
-    const [port, setPort] = useState("");
+    const [host, setHost] = useState("test.mosquitto.org");
+    const [port, setPort] = useState("8080");
 
     const connectDisconnect = () => {
         connected ? disconnect() : connect();
