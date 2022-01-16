@@ -38,7 +38,7 @@ export const StreetInfo = ({location, setLocation, clientID} : StreetInfoProps) 
         } catch (error) {
             console.log('Error: ', error);
         }
-    }, [longitude]);
+    }, [latitude, longitude, heading]);
 
     return (
         <View>
