@@ -14,7 +14,7 @@ export const StreetGatherer = () => {
         let streetData = await streetJson.json()
         console.log(streetData)
         setStreetinfo(streetData)
-    })
+    }, [])
 
 
     return (
